@@ -1,17 +1,27 @@
 // Реализация bind
 
 function bind(func, context) {
+
+    let bindArgs = [].slice.call(arguments,2);
     return function () {
-        return func.call(context);
+        let funcArgs = [].slice.call(arguments);
+        return func.apply(context, bindArgs.concat(funcArgs));
    };
 }
+let sum = function() {
+    return [].reduce.call(arguments, function(result, current) {
+        return result + current;
+    }, this.sum);
+};
+let getSum = bind(sum, {sum: 10}, 20, 20);
+console.log(getSum(50, 50, 30));
 
-function getName() {
-    return this.name;
-}
+let str = function (...args) {
+    return this.str + args;
+};
 
-let newName = bind(getName, {name: 'John'});
-console.log(newName());
+let getStr = bind(str, {str:'Hello world'});
+console.log(getStr(' and bind'));
 
 // Реализация map
 function map(arr, callback, thisContext) {
